@@ -1,0 +1,55 @@
+import type { Metadata } from "next";
+import { site } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "photos",
+  description: `Photos from ${site.title} land here after ${site.eventDateHuman}.`,
+};
+
+const frames = Array.from({ length: 9 }, (_, i) => ({
+  id: String(i + 1).padStart(2, "0"),
+}));
+
+export default function PhotosPage() {
+  return (
+    <div className="mx-auto max-w-5xl px-4 pb-24 pt-32 sm:px-6">
+      <p className="readout mb-3 text-probe">photos</p>
+      <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
+        The gallery develops after july 29.
+      </h1>
+      <p className="mt-4 max-w-xl text-sm leading-relaxed text-fg-muted">
+        Every frame below is currently in a superposition of all possible
+        hackathon photos. Measurement scheduled for {site.eventDateHuman}.
+      </p>
+
+      <ul className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3" aria-label="Photo placeholders">
+        {frames.map(({ id }, i) => (
+          <li
+            key={id}
+            className="relative aspect-[4/3] overflow-hidden rounded-lg border border-line bg-panel/50"
+          >
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(139,124,246,0.08),transparent_65%)]"
+            />
+            {i === 4 && (
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 flex items-center justify-center gap-2"
+              >
+                <i className="size-1.5 rounded-full bg-atom/70 inline-block" />
+                <i className="size-1.5 rounded-full bg-atom/70 inline-block" />
+                <i className="size-1.5 rounded-full bg-error/70 inline-block" />
+                <i className="size-1.5 rounded-full bg-atom/70 inline-block" />
+                <i className="size-1.5 rounded-full bg-atom/70 inline-block" />
+              </div>
+            )}
+            <span className="readout absolute bottom-2 left-3 text-fg-muted/60">
+              frame {id} · unexposed
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
