@@ -4,20 +4,14 @@ export default function LumaEmbed() {
   if (!site.luma.embedEnabled) {
     return (
       <div className="card-pixel p-8 text-center">
-        <p className="readout mb-6 text-fg-muted">
-          registration is open · approval-based
-        </p>
         <a
           href={site.luma.url}
           target="_blank"
           rel="noopener noreferrer"
           className="btn-pixel"
         >
-          request a seat ↗
+          apply on luma ↗
         </a>
-        <p className="mt-6 text-sm text-fg-muted">
-          registration is handled on Luma — seats are limited
-        </p>
       </div>
     );
   }
@@ -26,7 +20,7 @@ export default function LumaEmbed() {
     <div className="card-pixel overflow-hidden">
       <iframe
         src={site.luma.embed}
-        title="Event registration"
+        title="Apply — event registration"
         className="h-[480px] w-full"
         allow="fullscreen; payment"
         loading="lazy"
@@ -39,7 +33,7 @@ export default function LumaEmbed() {
           rel="noopener noreferrer"
           className="text-fg underline decoration-line underline-offset-4 hover:text-brand"
         >
-          open the event page directly
+          apply on luma directly
         </a>
       </p>
     </div>

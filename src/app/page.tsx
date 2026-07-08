@@ -1,30 +1,21 @@
-import Link from "next/link";
 import HeroSection from "@/components/hero/HeroSection";
 import LumaEmbed from "@/components/LumaEmbed";
 import { site } from "@/lib/site";
 
 const facts = [
-  { label: "date", value: "july 29, 2026" },
-  { label: "venue", value: "microsoft garage · soho, nyc" },
-  { label: "format", value: "one day · in person · teams" },
-  { label: "hardware", value: "neutral atoms · analog mode" },
-  { label: "interface", value: "vs code → real cloud qpu" },
-  { label: "prizes", value: "compute credits · details soon" },
+  { label: "date", value: "wednesday, july 29, 2026" },
+  { label: "venue", value: "microsoft garage · nyc" },
+  { label: "format", value: "one day · invite-only" },
+  { label: "hardware", value: "pasqal analog rydberg processor" },
+  { label: "access", value: "pasqal cloud · pulse level" },
+  { label: "admission", value: "teams by selection" },
 ];
 
-const tracks = [
-  {
-    title: "Drive real atoms",
-    body: "No simulator cosplay. Your pulses run on a production neutral-atom machine in analog mode, queued straight from a VS Code extension.",
-  },
-  {
-    title: "Shape real pulses",
-    body: "Analog control is a different sport: you sculpt global drives and ride the physics. The best pulse wins — the hardware is the judge.",
-  },
-  {
-    title: "Beat real decoherence",
-    body: "T1 doesn't care how elegant your theory is. Teams are scored on what survives contact with hardware.",
-  },
+const gets = [
+  "Direct access to Pasqal Cloud",
+  "Harmoniqs' toolkit for pulse-level optimization, with engineering support throughout the event",
+  "State-of-the-art emulators and QPUs",
+  "Challenges designed to produce results relevant to both companies' technical roadmaps",
 ];
 
 export default function Home() {
@@ -45,45 +36,45 @@ export default function Home() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-        <p className="readout mb-4 text-brand">why &ldquo;real&rdquo;</p>
-        <h2 className="pixel-h max-w-2xl text-balance text-4xl sm:text-5xl">
-          Most quantum hackathons end at the simulator. This one starts where
-          the simulator stops.
-        </h2>
-        <div className="mt-12 grid gap-8 md:grid-cols-3">
-          {tracks.map(({ title, body }) => (
-            <div key={title} className="card-pixel p-6">
-              <h3 className="pixel-h mb-3 text-2xl">{title}</h3>
-              <p className="text-sm leading-relaxed text-fg-muted">{body}</p>
-            </div>
+        <p className="readout mb-4 text-brand">what participants get</p>
+        <ul className="grid gap-6 md:grid-cols-2">
+          {gets.map((item) => (
+            <li key={item} className="card-pixel p-6 text-sm leading-relaxed text-fg">
+              {item}
+            </li>
           ))}
-        </div>
-        <p className="mt-10 text-sm text-fg-muted">
-          full challenge specifications decrypt on{" "}
-          <Link
-            href="/challenges"
-            className="text-fg underline decoration-line underline-offset-4 hover:text-brand"
-          >
-            the challenges page
-          </Link>{" "}
-          before the event.
-        </p>
+        </ul>
       </section>
 
-      <section id="register" className="border-t-2 border-line/70 bg-panel/30">
+      <section id="apply" className="border-t-2 border-line/70 bg-panel/30">
         <div className="mx-auto max-w-3xl px-4 py-20 sm:px-6">
-          <p className="readout mb-4 text-brand">register</p>
+          <p className="readout mb-4 text-brand">apply</p>
           <h2 className="pixel-h text-balance text-4xl sm:text-5xl">
-            Seats are quantized. Reserve yours.
+            Applications are open now.
           </h2>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-fg-muted">
-            Registration is free, with host approval. Space is limited by the
-            venue — and by how many teams one machine can keep honest for a
-            day.
+            Spots are limited. Teams are admitted by selection — graduate
+            researchers and full-time scientists from the tristate quantum
+            community.
           </p>
           <div className="mt-10">
             <LumaEmbed />
           </div>
+        </div>
+      </section>
+
+      <section aria-label="Hosts" className="border-t-2 border-line/70">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-14 sm:px-6 md:grid-cols-2">
+          <p className="text-sm leading-relaxed text-fg-muted">
+            <span className="text-fg">Harmoniqs</span> builds quantum optimal
+            control software. Our advanced toolkit enables high-fidelity gate
+            synthesis and pulse-level optimization across all qubit platforms —
+            validated on neutral atoms, transmons, and trapped ions.
+          </p>
+          <p className="text-sm leading-relaxed text-fg-muted">
+            <span className="text-fg">Pasqal</span> builds analog quantum
+            processors based on arrays of neutral atoms.
+          </p>
         </div>
       </section>
     </>

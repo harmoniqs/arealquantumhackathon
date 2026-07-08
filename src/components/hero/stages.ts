@@ -1,10 +1,6 @@
 // Shared scroll timeline for the hero. Progress p runs 0→1 across the full
 // hero section; the 3D scene and the DOM captions both key off these ranges
 // so the story stays in sync.
-//
-// The story: neutral-atom hardware (tweezers hold atoms) → analog control
-// (global pulses, entanglement) → real machines make real errors (a few
-// atoms flare and heal) → the event CTA.
 
 export const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
@@ -47,36 +43,36 @@ export const STAGE_COPY = [
   {
     key: "title",
     ...T.title,
-    kicker: "jul 29 2026 · new york city · real neutral-atom hardware",
+    kicker: "wednesday, july 29, 2026 · microsoft garage, nyc",
     heading: "a real quantum hackathon",
-    body: "",
+    body: "Pulse-level access, analog hardware, and open problems in QEC.",
   },
   {
     key: "hardware",
     ...T.hardware,
-    kicker: "01 / the hardware",
-    heading: "Atoms, held by light.",
-    body: "Single neutral atoms, pinned mid-vacuum in an array of optical tweezers. No fabrication, no wiring — a quantum processor assembled from lasers, one atom at a time.",
+    kicker: "",
+    heading: "Most quantum hackathons run on simulators or gate-level abstractions.",
+    body: "",
   },
   {
     key: "control",
     ...T.control,
-    kicker: "02 / the control",
-    heading: "Programmed with pulses, not gates.",
-    body: "In analog mode you shape global drives and let the physics do the computing. On July 29 you'll send yours to a real machine, straight from your editor.",
+    kicker: "",
+    heading: "This one doesn't.",
+    body: "",
   },
   {
     key: "real",
     ...T.real,
-    kicker: "03 / the catch",
-    heading: "Real atoms make real errors.",
-    body: "Noise ships with every shot — taming it is the whole game. The challenges are about keeping quantum information alive on live hardware.",
+    kicker: "",
+    heading: "Directly at the pulse level.",
+    body: "Drive parameters, hardware noise, no gate layer between you and the physics — on Pasqal's analog Rydberg processor via Pasqal Cloud.",
   },
   {
     key: "cta",
     ...T.cta,
-    kicker: "one day · real hardware · compute-credit prizes",
-    heading: "Come hack the real thing.",
-    body: "July 29, New York City. Bring a team or find one there.",
+    kicker: "co-hosted by harmoniqs · pasqal · microsoft",
+    heading: "Spots are limited.",
+    body: "Teams are admitted by selection. Applications are open now.",
   },
 ] as const;

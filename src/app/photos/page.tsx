@@ -15,12 +15,8 @@ export default function PhotosPage() {
     <div className="mx-auto max-w-5xl px-4 pb-24 pt-32 sm:px-6">
       <p className="readout mb-4 text-brand">photos</p>
       <h1 className="pixel-h text-balance text-5xl sm:text-7xl">
-        The gallery develops after july 29.
+        Developing after july 29.
       </h1>
-      <p className="mt-5 max-w-xl text-sm leading-relaxed text-fg-muted">
-        Every frame below is currently in a superposition of all possible
-        hackathon photos. Measurement scheduled for {site.eventDateHuman}.
-      </p>
 
       <ul
         className="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-3"

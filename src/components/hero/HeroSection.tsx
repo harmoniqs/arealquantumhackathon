@@ -99,9 +99,11 @@ export default function HeroSection() {
                   : "absolute bottom-[9dvh] left-4 z-10 max-w-md px-2 sm:left-[8vw]"
               }
             >
-              <p className={`readout mb-4 ${isCta ? "text-brand" : "text-fg-muted"}`}>
-                {stage.kicker}
-              </p>
+              {stage.kicker && (
+                <p className={`readout mb-4 ${isCta ? "text-brand" : "text-fg-muted"}`}>
+                  {stage.kicker}
+                </p>
+              )}
               <h2
                 className={
                   isTitle
@@ -123,8 +125,8 @@ export default function HeroSection() {
               )}
               {isCta && (
                 <div className="mt-9 flex flex-wrap items-center justify-center gap-5">
-                  <Link href="/#register" className="btn-pixel">
-                    register
+                  <Link href="/#apply" className="btn-pixel">
+                    apply
                   </Link>
                   <Link href="/challenges" className="btn-ghost">
                     the challenges

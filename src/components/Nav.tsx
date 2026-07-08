@@ -45,10 +45,10 @@ export default function Nav() {
             );
           })}
           <Link
-            href="/#register"
+            href="/#apply"
             className="readout border-2 border-brand-border bg-brand px-3 py-2 text-black transition-colors hover:bg-brand-hover"
           >
-            register
+            apply
           </Link>
         </div>
       </nav>
