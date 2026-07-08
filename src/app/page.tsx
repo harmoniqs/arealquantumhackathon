@@ -5,7 +5,7 @@ import { site } from "@/lib/site";
 const facts = [
   { label: "date", value: "wednesday, july 29, 2026" },
   { label: "venue", value: "microsoft garage · nyc" },
-  { label: "format", value: "one day · invite-only" },
+  { label: "format", value: "one day · in person" },
   { label: "hardware", value: "pasqal analog rydberg processor" },
   { label: "access", value: "pasqal cloud · pulse level" },
   { label: "admission", value: "teams by selection" },

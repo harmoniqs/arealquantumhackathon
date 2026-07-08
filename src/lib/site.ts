@@ -1,7 +1,7 @@
 export const site = {
   title: "a real quantum hackathon",
   description:
-    "Pulse-level access, analog hardware, and open problems in Quantum Error Correction. A one-day, invite-only hackathon at Microsoft Garage, New York City — Wednesday, July 29, 2026.",
+    "Pulse-level access, analog hardware, and open problems in Quantum Error Correction. A one-day hackathon at Microsoft Garage, New York City — Wednesday, July 29, 2026.",
   eventDate: "2026-07-29",
   eventDateHuman: "July 29, 2026",
   eventDateFull: "Wednesday, July 29, 2026",
