@@ -72,7 +72,7 @@ export default function HeroSection() {
   if (reducedMotion) return <StaticHero />;
 
   return (
-    <div ref={sectionRef} className="relative h-[700dvh]">
+    <div ref={sectionRef} className="relative h-[550dvh]">
       <div className="sticky top-0 h-dvh overflow-hidden">
         <div className="absolute inset-0" aria-hidden="true">
           <QecCanvas progressRef={progressRef} />
@@ -82,9 +82,6 @@ export default function HeroSection() {
         {STAGE_COPY.map((stage, i) => {
           const isTitle = stage.key === "title";
           const isCta = stage.key === "cta";
-          // encode has no readout chips yet → caption sits low; the syndrome
-          // readout lives below the chain, so later captions move up top
-          const isLow = stage.key === "encode";
           return (
             <div
               key={stage.key}
@@ -94,42 +91,39 @@ export default function HeroSection() {
               style={{ opacity: i === 0 ? 1 : 0 }}
               className={
                 isTitle || isCta
-                  ? "absolute inset-x-0 top-[16dvh] z-10 mx-auto max-w-3xl px-6 text-center"
-                  : isLow
-                    ? "absolute bottom-[10dvh] left-4 z-10 max-w-md px-2 sm:left-[8vw]"
-                    : "absolute left-4 top-[12dvh] z-10 max-w-md px-2 sm:left-[8vw]"
+                  ? "absolute inset-x-0 top-[14dvh] z-10 mx-auto max-w-3xl px-6 text-center"
+                  : "absolute bottom-[9dvh] left-4 z-10 max-w-md px-2 sm:left-[8vw]"
               }
             >
-              <p className={`readout mb-3 ${isCta ? "text-probe" : "text-fg-muted"}`}>
+              <p className={`readout mb-4 ${isCta ? "text-brand" : "text-fg-muted"}`}>
                 {stage.kicker}
               </p>
               <h2
                 className={
                   isTitle
-                    ? "text-balance text-5xl font-semibold tracking-tight sm:text-7xl"
-                    : "text-balance text-2xl font-semibold tracking-tight sm:text-4xl"
+                    ? "pixel-h text-balance text-6xl sm:text-8xl"
+                    : "pixel-h text-balance text-4xl sm:text-6xl"
                 }
               >
                 {stage.heading}
+                {isTitle && (
+                  <span aria-hidden="true" className="blink text-brand">
+                    _
+                  </span>
+                )}
               </h2>
               {stage.body && (
-                <p className="mt-3 text-pretty text-sm leading-relaxed text-fg-muted sm:text-base">
+                <p className="mt-4 text-pretty text-sm leading-relaxed text-fg-muted sm:text-base">
                   {stage.body}
                 </p>
               )}
               {isCta && (
-                <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-                  <Link
-                    href="/#register"
-                    className="readout rounded border border-probe bg-probe/10 px-6 py-3 text-probe transition-colors hover:bg-probe/20"
-                  >
+                <div className="mt-9 flex flex-wrap items-center justify-center gap-5">
+                  <Link href="/#register" className="btn-pixel">
                     register
                   </Link>
-                  <Link
-                    href="/challenges"
-                    className="readout rounded border border-line px-6 py-3 text-fg-muted transition-colors hover:border-fg-muted hover:text-fg"
-                  >
-                    see the challenges
+                  <Link href="/challenges" className="btn-ghost">
+                    the challenges
                   </Link>
                 </div>
               )}
@@ -142,7 +136,7 @@ export default function HeroSection() {
           aria-hidden="true"
           className="readout absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-fg-muted"
         >
-          scroll ↓
+          <span className="blink">▼</span> scroll
         </p>
       </div>
     </div>

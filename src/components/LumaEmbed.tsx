@@ -3,19 +3,19 @@ import { site } from "@/lib/site";
 export default function LumaEmbed() {
   if (!site.luma.embedEnabled) {
     return (
-      <div className="rounded-lg border border-line bg-panel/60 p-8 text-center">
-        <p className="readout mb-4 text-fg-muted">
+      <div className="card-pixel p-8 text-center">
+        <p className="readout mb-6 text-fg-muted">
           registration is open · approval-based
         </p>
         <a
           href={site.luma.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="readout inline-block rounded border border-probe bg-probe/10 px-8 py-4 text-probe transition-colors hover:bg-probe/20"
+          className="btn-pixel"
         >
           request a seat ↗
         </a>
-        <p className="mt-4 text-sm text-fg-muted">
+        <p className="mt-6 text-sm text-fg-muted">
           registration is handled on Luma — seats are limited
         </p>
       </div>
@@ -23,7 +23,7 @@ export default function LumaEmbed() {
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-line bg-panel/60">
+    <div className="card-pixel overflow-hidden">
       <iframe
         src={site.luma.embed}
         title="Event registration"
@@ -31,13 +31,13 @@ export default function LumaEmbed() {
         allow="fullscreen; payment"
         loading="lazy"
       />
-      <p className="border-t border-line/60 px-4 py-3 text-sm text-fg-muted">
+      <p className="border-t-2 border-line/70 px-4 py-3 text-sm text-fg-muted">
         embed not loading?{" "}
         <a
           href={site.luma.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-fg underline decoration-line underline-offset-4 hover:text-probe"
+          className="text-fg underline decoration-line underline-offset-4 hover:text-brand"
         >
           open the event page directly
         </a>

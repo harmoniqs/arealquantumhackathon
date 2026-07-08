@@ -5,6 +5,8 @@ export const site = {
   eventDate: "2026-07-29",
   eventDateHuman: "July 29, 2026",
   city: "New York City",
+  venue: "Microsoft Garage, SoHo, New York City",
+  venueShort: "Microsoft Garage · SoHo, NYC",
   luma: {
     url: "https://luma.com/jdjfnw0e",
     embed: "https://lu.ma/embed/event/evt-PbZQ7fdpSI4Ka4c/simple",

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, Press_Start_2P, VT323 } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site";
 import Nav from "@/components/Nav";
@@ -10,8 +10,15 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const jetbrains = JetBrains_Mono({
-  variable: "--font-jetbrains",
+const vt323 = VT323({
+  variable: "--font-vt323",
+  weight: "400",
+  subsets: ["latin"],
+});
+
+const pressStart = Press_Start_2P({
+  variable: "--font-press-start",
+  weight: "400",
   subsets: ["latin"],
 });
 
@@ -31,12 +38,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrains.variable} h-full antialiased`}
+      className={`${inter.variable} ${vt323.variable} ${pressStart.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-void text-fg">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-panel focus:px-4 focus:py-2 focus:rounded readout"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-panel focus:px-4 focus:py-2 readout"
         >
           skip to content
         </a>

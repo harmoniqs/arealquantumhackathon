@@ -1,22 +1,24 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { T, phase, sphase, window01 } from "./stages";
 
-// 5 atoms on a line, ZXZ cluster-chain stabilizers S_j = Z_{j-1} X_j Z_{j+1}.
-// The X error lands on the middle atom (index 2, "atom 3"), so the flanking
-// stabilizers S2 and S4 flip while S3 stays quiet.
-const ATOM_X = [-4, -2, 0, 2, 4];
-const ERROR_IDX = 2;
-const STABS = [
-  { label: "S₂", center: 1, flips: true },
-  { label: "S₃", center: 2, flips: false },
-  { label: "S₄", center: 3, flips: true },
-];
-const MEASURE_WINDOWS = [T.measure1, T.measure2, T.measure3] as const;
+// A neutral-atom tweezer array: a 6×3 grid of atoms held in vertical beams
+// of light, entangled by a sweeping global pulse. During the "real" stage a
+// few atoms flare warm (errors) and a brand-yellow repair flash heals them.
+const COLS = 6;
+const ROWS = 3;
+const SPACING = 2;
+const GRID: [number, number][] = [];
+for (let r = 0; r < ROWS; r++) {
+  for (let c = 0; c < COLS; c++) {
+    GRID.push([(c - (COLS - 1) / 2) * SPACING, (r - (ROWS - 1) / 2) * SPACING]);
+  }
+}
+const ERROR_ATOMS = [4, 9, 14]; // spread across the array
+const ERROR_WINDOWS = T.errors;
 
 function makeGlowTexture() {
   const c = document.createElement("canvas");
@@ -42,11 +44,10 @@ export default function QecScene({
   const colors = useMemo(
     () => ({
       atom: new THREE.Color("#7dd3fc"),
-      probe: new THREE.Color("#22d3ee"),
+      brand: new THREE.Color("#fff676"),
       entangle: new THREE.Color("#8b7cf6"),
       error: new THREE.Color("#ff5c3d"),
       tmp: new THREE.Color(),
-      tmp2: new THREE.Color(),
     }),
     []
   );
@@ -54,19 +55,34 @@ export default function QecScene({
   // scattered entry positions — deterministic so SSR/dev stay stable
   const scatter = useMemo(
     () =>
-      ATOM_X.map((_, i) => [
-        Math.sin(i * 2.3 + 1) * 6,
-        Math.cos(i * 1.7) * 3.5,
-        Math.sin(i * 1.3) * 2.5,
+      GRID.map((_, i) => [
+        Math.sin(i * 2.3 + 1) * 9,
+        Math.cos(i * 1.7) * 5,
+        Math.sin(i * 3.1) * 4,
       ]),
     []
   );
+
+  // nearest-neighbour bonds: along rows and along columns
+  const bonds = useMemo(() => {
+    const list: { mid: [number, number]; horizontal: boolean }[] = [];
+    for (let r = 0; r < ROWS; r++)
+      for (let c = 0; c < COLS - 1; c++) {
+        const [x, z] = GRID[r * COLS + c];
+        list.push({ mid: [x + SPACING / 2, z], horizontal: true });
+      }
+    for (let r = 0; r < ROWS - 1; r++)
+      for (let c = 0; c < COLS; c++) {
+        const [x, z] = GRID[r * COLS + c];
+        list.push({ mid: [x, z + SPACING / 2], horizontal: false });
+      }
+    return list;
+  }, []);
 
   const starPositions = useMemo(() => {
     const n = 1200;
     const arr = new Float32Array(n * 3);
     for (let i = 0; i < n; i++) {
-      // deterministic spherical-ish shell
       const a = i * 2.39996; // golden angle
       const r = 16 + 18 * ((i * 7919) % 1000) / 1000;
       const y = ((i * 104729) % 2000) / 1000 - 1;
@@ -84,17 +100,8 @@ export default function QecScene({
   const glowRefs = useRef<(THREE.Sprite | null)[]>([]);
   const tweezerRefs = useRef<(THREE.Mesh | null)[]>([]);
   const bondRefs = useRef<(THREE.Mesh | null)[]>([]);
-  const bracketRefs = useRef<(THREE.Mesh | null)[]>([]);
-  const encodeSweep = useRef<THREE.Mesh>(null!);
-  const measureBeam = useRef<THREE.Mesh>(null!);
-  const shockRing = useRef<THREE.Mesh>(null!);
-  const correctRing = useRef<THREE.Mesh>(null!);
-  const decodeBeamRefs = useRef<(THREE.Mesh | null)[]>([]);
-
-  // discrete readout state — updated only when a threshold is crossed
-  const [measured, setMeasured] = useState(0);
-  const [corrected, setCorrected] = useState(false);
-  const [stabilized, setStabilized] = useState(false); // brackets formed → labels visible
+  const healRingRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const pulseSweep = useRef<THREE.Mesh>(null!);
 
   useFrame((state) => {
     const p = progressRef.current ?? 0;
@@ -102,157 +109,107 @@ export default function QecScene({
 
     // responsive framing: shrink the stage on narrow screens
     const aspect = size.width / size.height;
-    const s = THREE.MathUtils.clamp(aspect / 1.35, 0.34, 1);
+    const s = THREE.MathUtils.clamp(aspect / 1.45, 0.42, 1);
     root.current.scale.setScalar(s);
 
-    // camera: drift in, lean toward the readout during syndrome, pull back for CTA
+    // camera: drift down toward the array, pull back for the CTA
     const cam = state.camera;
-    const z =
-      15 -
-      4 * sphase(p, 0.03, 0.15) -
-      1.4 * sphase(p, 0.5, 0.58) +
-      1.4 * sphase(p, 0.7, 0.76) +
-      2.2 * sphase(p, 0.88, 0.97);
-    cam.position.x += (state.pointer.x * 0.7 - cam.position.x) * 0.05;
-    cam.position.y += (state.pointer.y * 0.35 - 0.25 - cam.position.y) * 0.05;
-    cam.position.z += (z - cam.position.z) * 0.08;
-    cam.lookAt(0, -0.35, 0);
+    const camY = 7 - 2.6 * sphase(p, 0.02, 0.16) + 1.6 * sphase(p, 0.76, 0.9);
+    const camZ = 16.5 - 4 * sphase(p, 0.02, 0.16) + 3 * sphase(p, 0.76, 0.9);
+    cam.position.x += (state.pointer.x * 0.9 - cam.position.x) * 0.05;
+    cam.position.y += (camY + state.pointer.y * 0.4 - cam.position.y) * 0.06;
+    cam.position.z += (camZ - cam.position.z) * 0.08;
+    cam.lookAt(0, -0.4, 0);
 
     stars.current.rotation.y = t * 0.008;
     const starMat = stars.current.material as THREE.PointsMaterial;
     starMat.opacity = 0.35 + 0.25 * sphase(p, 0, 0.08);
 
-    const errAmt =
-      sphase(p, T.errorHit[0], T.errorHit[1]) *
-      (1 - sphase(p, T.restore[0], T.restore[1]));
+    // per-atom error amount (0 for most atoms)
+    const errAmtFor = (i: number) => {
+      const slot = ERROR_ATOMS.indexOf(i);
+      if (slot < 0) return 0;
+      const [a, b] = ERROR_WINDOWS[slot];
+      return window01(p, a, b, 0.03);
+    };
 
-    // atoms
-    ATOM_X.forEach((x, i) => {
+    GRID.forEach(([gx, gz], i) => {
       const mesh = atomRefs.current[i];
       const glow = glowRefs.current[i];
       if (!mesh || !glow) return;
-      const arrive = sphase(p, T.atomsIn[0], T.atomsIn[1] + i * 0.012);
+      const arrive = sphase(p, T.atomsIn[0], T.atomsIn[1] + (i % COLS) * 0.008);
       const [sx, sy, sz] = scatter[i];
       mesh.position.set(
-        THREE.MathUtils.lerp(sx, x, arrive),
+        THREE.MathUtils.lerp(sx, gx, arrive),
         THREE.MathUtils.lerp(sy, 0, arrive),
-        THREE.MathUtils.lerp(sz, 0, arrive)
+        THREE.MathUtils.lerp(sz, gz, arrive)
       );
-      const isErr = i === ERROR_IDX;
-      const wobble = isErr ? errAmt : 0;
-      mesh.position.x += Math.sin(t * 13 + i) * 0.05 * wobble;
-      mesh.position.y += Math.cos(t * 17 + i * 2) * 0.05 * wobble;
+      const err = errAmtFor(i);
+      mesh.position.x += Math.sin(t * 13 + i) * 0.05 * err;
+      mesh.position.y += Math.cos(t * 17 + i * 2) * 0.05 * err;
       const breathe = 1 + 0.05 * Math.sin(t * 1.8 + i * 1.1);
-      mesh.scale.setScalar(breathe * (1 + 0.25 * wobble));
+      mesh.scale.setScalar(breathe * (1 + 0.3 * err));
 
       const mat = mesh.material as THREE.MeshStandardMaterial;
-      colors.tmp.copy(colors.atom).lerp(colors.error, wobble);
+      colors.tmp.copy(colors.atom).lerp(colors.error, err);
       mat.color.copy(colors.tmp);
       mat.emissive.copy(colors.tmp);
-      mat.emissiveIntensity = 0.55 + 0.9 * wobble;
+      mat.emissiveIntensity = 0.55 + 0.9 * err;
       mat.opacity = arrive;
 
       glow.position.copy(mesh.position);
-      glow.scale.setScalar(1.7 * breathe * (1 + 0.5 * wobble));
+      glow.scale.setScalar(1.7 * breathe * (1 + 0.6 * err));
       const gmat = glow.material as THREE.SpriteMaterial;
       gmat.color.copy(colors.tmp);
-      gmat.opacity = arrive * (0.35 + 0.35 * wobble);
+      gmat.opacity = arrive * (0.32 + 0.38 * err);
     });
 
-    // tweezer beams
+    // tweezer beams — columns of light holding each atom
     tweezerRefs.current.forEach((tw, i) => {
       if (!tw) return;
       const mat = tw.material as THREE.MeshBasicMaterial;
-      mat.opacity = 0.14 * sphase(p, T.tweezersIn[0], T.tweezersIn[1] + i * 0.01);
+      mat.opacity =
+        0.09 * sphase(p, T.tweezersIn[0], T.tweezersIn[1] + (i % COLS) * 0.008);
     });
 
-    // entangling bonds
+    // entangling bonds ripple in with the pulse
     bondRefs.current.forEach((bond, i) => {
       if (!bond) return;
       const mat = bond.material as THREE.MeshBasicMaterial;
-      const inAmt = sphase(p, T.bondsIn[0] + i * 0.02, T.bondsIn[0] + i * 0.02 + 0.06);
-      const nearError = i === ERROR_IDX - 1 || i === ERROR_IDX;
-      colors.tmp2.copy(colors.entangle).lerp(colors.error, nearError ? errAmt * 0.6 : 0);
-      mat.color.copy(colors.tmp2);
-      mat.opacity = inAmt * (0.5 + 0.15 * Math.sin(t * 2.4 + i));
+      const inAmt = sphase(
+        p,
+        T.bondsIn[0] + (i % COLS) * 0.015,
+        T.bondsIn[0] + (i % COLS) * 0.015 + 0.07
+      );
+      mat.opacity = inAmt * (0.4 + 0.15 * Math.sin(t * 2.4 + i));
     });
 
-    // encode pulse sweeping the chain (global drive)
+    // the global drive: a wall of brand-yellow light washing the array
     {
-      const w = window01(p, T.pulseSweep[0], T.pulseSweep[1], 0.02);
+      const w = window01(p, T.pulseSweep[0], T.pulseSweep[1], 0.025);
       const sweepT = phase(p, T.pulseSweep[0], T.pulseSweep[1]);
-      encodeSweep.current.position.x = THREE.MathUtils.lerp(-7, 7, sweepT);
-      (encodeSweep.current.material as THREE.MeshBasicMaterial).opacity = w * 0.5;
+      pulseSweep.current.position.x = THREE.MathUtils.lerp(-9, 9, sweepT);
+      (pulseSweep.current.material as THREE.MeshBasicMaterial).opacity = w * 0.55;
     }
 
-    // stabilizer brackets, with a highlight while being measured
-    bracketRefs.current.forEach((br, i) => {
-      if (!br) return;
-      const mat = br.material as THREE.MeshBasicMaterial;
-      const inAmt = sphase(p, T.bracketsIn[0] + i * 0.015, T.bracketsIn[1] + i * 0.015);
-      const [m0, m1] = MEASURE_WINDOWS[i];
-      const hl = window01(p, m0, m1, 0.015);
-      colors.tmp2.copy(colors.entangle).lerp(colors.probe, hl);
-      mat.color.copy(colors.tmp2);
-      mat.opacity = inAmt * (0.35 + 0.65 * hl);
+    // repair flash: a yellow ring blooms over each healed atom
+    ERROR_ATOMS.forEach((atomIdx, slot) => {
+      const ring = healRingRefs.current[slot];
+      if (!ring) return;
+      const [, b] = ERROR_WINDOWS[slot];
+      const healT = phase(p, b - 0.035, b);
+      const w = window01(p, b - 0.035, b + 0.02, 0.012);
+      const mesh = atomRefs.current[atomIdx];
+      if (mesh) ring.position.copy(mesh.position);
+      ring.scale.setScalar(0.5 + healT * 2.2);
+      (ring.material as THREE.MeshBasicMaterial).opacity = w * 0.85;
     });
-
-    // one shared measurement beam scans each triplet in turn
-    {
-      let active = -1;
-      let local = 0;
-      MEASURE_WINDOWS.forEach(([a, b], i) => {
-        if (p >= a && p <= b) {
-          active = i;
-          local = phase(p, a, b);
-        }
-      });
-      const mat = measureBeam.current.material as THREE.MeshBasicMaterial;
-      if (active >= 0) {
-        const cx = ATOM_X[STABS[active].center];
-        measureBeam.current.position.x = cx - 2.4 + 4.8 * local;
-        mat.opacity = window01(local, 0, 1, 0.25) * 0.7;
-      } else {
-        mat.opacity = 0;
-      }
-    }
-
-    // error shockwave
-    {
-      const w = window01(p, T.errorHit[0], T.errorHit[1] + 0.04, 0.02);
-      const grow = phase(p, T.errorHit[0], T.errorHit[1] + 0.04);
-      shockRing.current.scale.setScalar(0.4 + grow * 3);
-      (shockRing.current.material as THREE.MeshBasicMaterial).opacity = w * (1 - grow) * 0.9;
-    }
-
-    // decode beams from the flipped syndromes converge on the culprit
-    decodeBeamRefs.current.forEach((beam) => {
-      if (!beam) return;
-      (beam.material as THREE.MeshBasicMaterial).opacity =
-        window01(p, T.decodeLines[0], T.correctionRing[1], 0.02) * 0.6;
-    });
-
-    // correction ring contracts onto the atom
-    {
-      const w = window01(p, T.correctionRing[0], T.correctionRing[1] + 0.02, 0.02);
-      const contract = sphase(p, T.correctionRing[0], T.correctionRing[1]);
-      correctRing.current.scale.setScalar(THREE.MathUtils.lerp(3.4, 0.45, contract));
-      (correctRing.current.material as THREE.MeshBasicMaterial).opacity = w * 0.9;
-    }
-
-    // discrete readout state
-    const wantMeasured = MEASURE_WINDOWS.filter(([, b]) => p >= b - 0.012).length;
-    if (wantMeasured !== measured) setMeasured(wantMeasured);
-    const wantCorrected = p >= T.restore[1] - 0.01;
-    if (wantCorrected !== corrected) setCorrected(wantCorrected);
-    const wantStabilized = p >= T.bracketsIn[0] + 0.02;
-    if (wantStabilized !== stabilized) setStabilized(wantStabilized);
   });
 
   return (
     <group>
       <ambientLight intensity={0.5} />
-      <directionalLight position={[4, 6, 8]} intensity={0.6} />
+      <directionalLight position={[4, 8, 6]} intensity={0.6} />
 
       <points ref={stars}>
         <bufferGeometry>
@@ -270,18 +227,18 @@ export default function QecScene({
       </points>
 
       <group ref={root}>
-        {/* optical tweezers */}
-        {ATOM_X.map((x, i) => (
+        {/* optical tweezers — vertical light columns */}
+        {GRID.map(([x, z], i) => (
           <mesh
             key={`tw-${i}`}
-            position={[x, 0, -0.4]}
+            position={[x, 0.4, z]}
             ref={(m) => {
               tweezerRefs.current[i] = m;
             }}
           >
-            <planeGeometry args={[0.16, 8]} />
+            <planeGeometry args={[0.14, 7]} />
             <meshBasicMaterial
-              color="#3b4a7a"
+              color="#fff676"
               transparent
               opacity={0}
               blending={THREE.AdditiveBlending}
@@ -290,17 +247,17 @@ export default function QecScene({
           </mesh>
         ))}
 
-        {/* entangling bonds */}
-        {ATOM_X.slice(0, -1).map((x, i) => (
+        {/* nearest-neighbour entangling bonds */}
+        {bonds.map(({ mid, horizontal }, i) => (
           <mesh
             key={`bond-${i}`}
-            position={[x + 1, 0, 0]}
-            rotation={[0, 0, Math.PI / 2]}
+            position={[mid[0], 0, mid[1]]}
+            rotation={horizontal ? [0, 0, Math.PI / 2] : [Math.PI / 2, 0, 0]}
             ref={(m) => {
               bondRefs.current[i] = m;
             }}
           >
-            <cylinderGeometry args={[0.025, 0.025, 1.5, 8]} />
+            <cylinderGeometry args={[0.02, 0.02, SPACING - 0.6, 8]} />
             <meshBasicMaterial
               color="#8b7cf6"
               transparent
@@ -312,7 +269,7 @@ export default function QecScene({
         ))}
 
         {/* atoms + glows */}
-        {ATOM_X.map((_, i) => (
+        {GRID.map((_, i) => (
           <group key={`atom-${i}`}>
             <mesh
               ref={(m) => {
@@ -346,11 +303,11 @@ export default function QecScene({
           </group>
         ))}
 
-        {/* encode pulse — glow texture keeps the wavefront soft-edged */}
-        <mesh ref={encodeSweep} position={[-7, 0, 0.2]}>
-          <planeGeometry args={[2.6, 7.5]} />
+        {/* the drive pulse — glow texture keeps the wavefront soft */}
+        <mesh ref={pulseSweep} position={[-9, 0.4, 0]}>
+          <planeGeometry args={[3, 8.5]} />
           <meshBasicMaterial
-            color="#22d3ee"
+            color="#fff676"
             map={glowTex}
             transparent
             opacity={0}
@@ -359,135 +316,26 @@ export default function QecScene({
           />
         </mesh>
 
-        {/* measurement beam (gate-zone probe) */}
-        <mesh ref={measureBeam} position={[0, 0, 0.3]}>
-          <planeGeometry args={[0.12, 3.4]} />
-          <meshBasicMaterial
-            color="#22d3ee"
-            transparent
-            opacity={0}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-          />
-        </mesh>
-
-        {/* stabilizer brackets + labels */}
-        {STABS.map((stab, i) => (
-          <group key={stab.label}>
-            <mesh
-              position={[ATOM_X[stab.center], -1.15, 0]}
-              ref={(m) => {
-                bracketRefs.current[i] = m;
-              }}
-            >
-              <planeGeometry args={[4.4, 0.045]} />
-              <meshBasicMaterial
-                color="#8b7cf6"
-                transparent
-                opacity={0}
-                blending={THREE.AdditiveBlending}
-                depthWrite={false}
-              />
-            </mesh>
-            <Html
-              center
-              position={[ATOM_X[stab.center], -1.6, 0]}
-              zIndexRange={[30, 0]}
-              wrapperClass="pointer-events-none select-none"
-            >
-              <div
-                className="readout whitespace-nowrap transition-opacity duration-700"
-                style={{
-                  color: "var(--entangle)",
-                  opacity: stabilized ? (measured > 0 || corrected ? 0.9 : 0.55) : 0,
-                }}
-              >
-                Z·X·Z
-              </div>
-            </Html>
-          </group>
+        {/* repair flashes */}
+        {ERROR_ATOMS.map((atomIdx, slot) => (
+          <mesh
+            key={`heal-${atomIdx}`}
+            rotation={[-Math.PI / 2, 0, 0]}
+            ref={(m) => {
+              healRingRefs.current[slot] = m;
+            }}
+          >
+            <ringGeometry args={[0.85, 1, 48]} />
+            <meshBasicMaterial
+              color="#fff676"
+              transparent
+              opacity={0}
+              blending={THREE.AdditiveBlending}
+              depthWrite={false}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
         ))}
-
-        {/* syndrome readout chips */}
-        {STABS.map((stab, i) => {
-          const visible = measured > i;
-          const tripped = stab.flips && !corrected;
-          return (
-            <Html
-              key={`chip-${stab.label}`}
-              center
-              position={[ATOM_X[stab.center], -2.35, 0]}
-              zIndexRange={[30, 0]}
-              wrapperClass="pointer-events-none select-none"
-            >
-              <div
-                className={`readout whitespace-nowrap rounded border px-2.5 py-1.5 backdrop-blur-sm transition-all duration-500 ${
-                  tripped
-                    ? "border-error/60 bg-error/10 text-error"
-                    : "border-line bg-panel/70 text-fg-muted"
-                }`}
-                style={{
-                  opacity: visible ? 1 : 0,
-                  transform: visible ? "translateY(0)" : "translateY(8px)",
-                }}
-              >
-                {stab.label} {visible ? (tripped ? "−1" : "+1") : "·"}
-              </div>
-            </Html>
-          );
-        })}
-
-        {/* error shockwave + correction ring around the middle atom */}
-        <mesh ref={shockRing} position={[ATOM_X[ERROR_IDX], 0, 0.1]}>
-          <ringGeometry args={[0.9, 1, 48]} />
-          <meshBasicMaterial
-            color="#ff5c3d"
-            transparent
-            opacity={0}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-        <mesh ref={correctRing} position={[ATOM_X[ERROR_IDX], 0, 0.1]}>
-          <ringGeometry args={[0.9, 1, 48]} />
-          <meshBasicMaterial
-            color="#22d3ee"
-            transparent
-            opacity={0}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-
-        {/* decode beams: flipped syndromes point at the culprit */}
-        {[STABS[0], STABS[2]].map((stab, i) => {
-          const from = new THREE.Vector2(ATOM_X[stab.center], -2.1);
-          const to = new THREE.Vector2(ATOM_X[ERROR_IDX], -0.15);
-          const mid = from.clone().add(to).multiplyScalar(0.5);
-          const len = from.distanceTo(to);
-          const angle = Math.atan2(to.y - from.y, to.x - from.x);
-          return (
-            <mesh
-              key={`decode-${stab.label}`}
-              position={[mid.x, mid.y, 0.15]}
-              rotation={[0, 0, angle]}
-              ref={(m) => {
-                decodeBeamRefs.current[i] = m;
-              }}
-            >
-              <planeGeometry args={[len, 0.03]} />
-              <meshBasicMaterial
-                color="#22d3ee"
-                transparent
-                opacity={0}
-                blending={THREE.AdditiveBlending}
-                depthWrite={false}
-              />
-            </mesh>
-          );
-        })}
       </group>
     </group>
   );

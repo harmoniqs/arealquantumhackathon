@@ -10,9 +10,13 @@ export default function QecCanvas({
 }) {
   return (
     <Canvas
-      camera={{ position: [0, 0, 15], fov: 42 }}
-      dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      camera={{ position: [0, 7, 16.5], fov: 42 }}
+      // low-res + pixelated upscale = the retro-game render style
+      dpr={0.4}
+      gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
+      onCreated={({ gl }) => {
+        gl.domElement.style.imageRendering = "pixelated";
+      }}
     >
       <QecScene progressRef={progressRef} />
     </Canvas>

@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "schedule",
-  description: `Shape of the day for ${site.title} — ${site.eventDateHuman}, ${site.city}.`,
+  description: `Shape of the day for ${site.title} — ${site.eventDateHuman}, ${site.venue}.`,
 };
 
 const blocks = [
@@ -22,30 +22,30 @@ const blocks = [
 export default function SchedulePage() {
   return (
     <div className="mx-auto max-w-3xl px-4 pb-24 pt-32 sm:px-6">
-      <p className="readout mb-3 text-probe">schedule</p>
-      <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
+      <p className="readout mb-4 text-brand">schedule</p>
+      <h1 className="pixel-h text-balance text-5xl sm:text-7xl">
         One day. Shaped like this.
       </h1>
-      <p className="mt-4 text-sm leading-relaxed text-fg-muted">
-        {site.eventDateHuman} · {site.city} · venue announced soon
+      <p className="mt-5 text-sm leading-relaxed text-fg-muted">
+        {site.eventDateHuman} · {site.venue}
       </p>
 
-      <div className="mt-6 inline-flex items-center gap-2 rounded border border-entangle/40 bg-entangle/10 px-3 py-2">
+      <div className="mt-6 inline-flex items-center gap-3 border-2 border-entangle/50 bg-entangle/10 px-3 py-2">
         <span className="readout text-entangle">provisional</span>
         <span className="text-sm text-fg-muted">
           times settle by {site.scheduleFinalBy}
         </span>
       </div>
 
-      <ol className="mt-12 border-l border-line">
+      <ol className="mt-12 border-l-2 border-line">
         {blocks.map(({ time, label }) => (
           <li key={time} className="relative pb-8 pl-8 last:pb-0">
             <span
               aria-hidden="true"
-              className="absolute -left-[5px] top-1.5 size-[9px] rounded-full border border-probe/60 bg-void"
+              className="absolute -left-[6px] top-1.5 size-[10px] border-2 border-brand bg-void"
             />
             <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-6">
-              <span className="font-mono text-sm tabular-nums text-probe">
+              <span className="font-mono text-xl tabular-nums text-brand">
                 {time}
               </span>
               <span className="text-fg">{label}</span>
@@ -58,7 +58,7 @@ export default function SchedulePage() {
         Can&apos;t stay the whole day? Register anyway —{" "}
         <Link
           href="/#register"
-          className="text-fg underline decoration-line underline-offset-4 hover:text-probe"
+          className="text-fg underline decoration-line underline-offset-4 hover:text-brand"
         >
           seats are limited
         </Link>

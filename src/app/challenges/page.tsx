@@ -6,40 +6,44 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "challenges",
   description:
-    "Analog fault tolerance on real neutral-atom hardware. Full specifications decrypt before the event.",
+    "Hands-on challenges on real neutral-atom hardware. Full specifications decrypt before the event.",
 };
 
 const teasers = [
   {
     id: "01",
-    hint: "syndrome extraction",
-    scramble: "Z·X·Z stabilizers on a five-atom chain — measured for real, not assumed.",
+    hint: "level one",
+    scramble: "Get your pulses onto real atoms and bring clean data back.",
   },
   {
     id: "02",
-    hint: "analog fault tolerance",
-    scramble: "Keep a protected state alive while the pulse budget runs out.",
+    hint: "level two",
+    scramble: "Keep a fragile quantum state alive while the pulse budget runs out.",
   },
   {
     id: "03",
-    hint: "the decoder's dilemma",
-    scramble: "Your syndrome record is noisy too. Decode anyway.",
+    hint: "boss level",
+    scramble: "The hardware fights back. Outsmart the noise for the win.",
   },
 ];
 
 export default function ChallengesPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 pb-24 pt-32 sm:px-6">
-      <p className="readout mb-3 text-probe">challenges</p>
-      <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
+      <p className="readout mb-4 text-brand">challenges</p>
+      <h1 className="pixel-h text-balance text-5xl sm:text-7xl">
         Specifications decrypt soon.
       </h1>
-      <p className="mt-4 max-w-xl text-sm leading-relaxed text-fg-muted">
-        What we can say now: the challenges are <strong className="text-fg">analog-only</strong>,
-        they run on <strong className="text-fg">real neutral-atom hardware</strong>, and they
-        revolve around <strong className="text-fg">error correction on five atoms</strong> —
-        the exact protocol animated on the front page. Registered teams get the
-        full specs here, with time to prepare before the event.
+      <p className="mt-5 max-w-xl text-sm leading-relaxed text-fg-muted">
+        What we can say now: the challenges are{" "}
+        <strong className="text-fg">analog-only</strong>, they run on{" "}
+        <strong className="text-fg">real neutral-atom hardware</strong>, and
+        they&apos;re about{" "}
+        <strong className="text-fg">
+          keeping quantum information alive on a live machine
+        </strong>
+        . Registered teams get the full specs here, with time to prepare before
+        the event.
       </p>
 
       <div className="mt-10">
@@ -49,19 +53,19 @@ export default function ChallengesPage() {
         />
       </div>
 
-      <div className="mt-14 space-y-4">
+      <div className="mt-14 space-y-6">
         {teasers.map(({ id, hint, scramble }) => (
-          <div
-            key={id}
-            className="rounded-lg border border-line bg-panel/50 p-6"
-          >
+          <div key={id} className="card-pixel p-6">
             <div className="flex items-center justify-between gap-4">
               <p className="readout text-fg-muted">
-                challenge {id} · <span className="text-entangle">{hint}</span>
+                challenge {id} · <span className="text-brand">{hint}</span>
               </p>
               <span className="readout text-fg-muted/60">locked</span>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-fg-muted blur-[3px] select-none" aria-hidden="true">
+            <p
+              className="mt-3 text-sm leading-relaxed text-fg-muted blur-[3px] select-none"
+              aria-hidden="true"
+            >
               {scramble}
             </p>
           </div>
@@ -72,7 +76,7 @@ export default function ChallengesPage() {
         Want the specs the moment they land?{" "}
         <Link
           href="/#register"
-          className="text-fg underline decoration-line underline-offset-4 hover:text-probe"
+          className="text-fg underline decoration-line underline-offset-4 hover:text-brand"
         >
           Register
         </Link>{" "}

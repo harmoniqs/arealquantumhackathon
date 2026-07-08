@@ -44,16 +44,16 @@ export default function Countdown({
 
   return (
     <div
-      className="flex gap-3 sm:gap-4"
+      className="flex gap-4 sm:gap-5"
       role="timer"
-      aria-label={`Time until challenges unlock`}
+      aria-label="Time until challenges unlock"
     >
       {cells.map(({ value, unit }) => (
         <div
           key={unit}
-          className="min-w-[4.5rem] rounded border border-line bg-panel/70 px-3 py-3 text-center"
+          className="card-pixel min-w-[4.5rem] px-3 py-3 text-center"
         >
-          <div className="font-mono text-3xl tabular-nums text-fg sm:text-4xl">
+          <div className="font-mono text-4xl tabular-nums text-brand sm:text-5xl">
             {value === undefined ? "--" : String(value).padStart(2, "0")}
           </div>
           <div className="readout mt-1 text-fg-muted">{unit}</div>
