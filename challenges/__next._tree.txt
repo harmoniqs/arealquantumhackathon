@@ -1,0 +1,5 @@
+:HL["/arealquantumhackathon/_next/static/chunks/0_ym3loa-4bl6.css","style"]
+:HL["/arealquantumhackathon/_next/static/media/0c8c4ded07fff55c-s.p.2tcyrya9o07vu.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/arealquantumhackathon/_next/static/media/83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/arealquantumhackathon/_next/static/media/de161955856a921d-s.p.0fxeqrss3ag9h.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"challenges","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"1hsKX9VZ-vNEOzCFXHFoH"}
