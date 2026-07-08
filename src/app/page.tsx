@@ -1,6 +1,5 @@
 import HeroSection from "@/components/hero/HeroSection";
 import ApplyButton from "@/components/ApplyButton";
-import AmicoMark from "@/components/AmicoMark";
 import { site } from "@/lib/site";
 
 const facts = [
@@ -64,11 +63,8 @@ export default function Home() {
             </div>
 
             <div className="card-pixel flex-[1.3] border-brand-border bg-brand/5 p-5">
-              <div className="flex items-center gap-3">
-                <AmicoMark className="h-9 w-auto shrink-0 text-fg" />
-                <p className="readout text-brand">harmoniqs toolkit</p>
-              </div>
-              <p className="mt-3 text-xs leading-relaxed text-fg-muted">
+              <p className="readout text-brand">harmoniqs toolkit</p>
+              <p className="mt-2 text-xs leading-relaxed text-fg-muted">
                 pulse-level optimization · multi-gpu access · engineering
                 support throughout the event
               </p>
