@@ -27,7 +27,6 @@ export const T = {
   cta: { start: 0.7, end: 1.0 },
 
   // scene beats
-  tweezersIn: [0.02, 0.12],
   atomsIn: [0.04, 0.18],
   pulseSweep: [0.34, 0.47],
   bondsIn: [0.37, 0.53],

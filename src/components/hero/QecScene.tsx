@@ -5,10 +5,10 @@ import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { T, phase, sphase, window01 } from "./stages";
 
-// A neutral-atom tweezer array: a 6×3 grid of atoms held in beams of light,
-// entangled by a sweeping drive pulse that the atoms physically ride. During
-// the "real" stage a few atoms glitch warm (errors) and brand-yellow repair
-// flashes heal them. The camera walks a keyframed path through the scene.
+// A neutral-atom array: a 6×3 grid of atoms entangled by a sweeping drive
+// pulse that the atoms physically ride. During the "real" stage a few atoms
+// glitch warm (errors) and brand-yellow repair flashes heal them. The camera
+// walks a keyframed path through the scene.
 const COLS = 6;
 const ROWS = 3;
 const SPACING = 2;
@@ -48,20 +48,6 @@ function makeGlowTexture() {
   return new THREE.CanvasTexture(c);
 }
 
-function makeGridTexture() {
-  const c = document.createElement("canvas");
-  c.width = c.height = 64;
-  const ctx = c.getContext("2d")!;
-  ctx.strokeStyle = "rgba(139,124,246,1)";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(1, 1, 62, 62);
-  const tex = new THREE.CanvasTexture(c);
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(36, 36);
-  tex.magFilter = THREE.NearestFilter;
-  return tex;
-}
-
 export default function QecScene({
   progressRef,
 }: {
@@ -70,7 +56,6 @@ export default function QecScene({
   const { size } = useThree();
 
   const glowTex = useMemo(() => makeGlowTexture(), []);
-  const gridTex = useMemo(() => makeGridTexture(), []);
   const colors = useMemo(
     () => ({
       atom: new THREE.Color("#7dd3fc"),
@@ -148,10 +133,8 @@ export default function QecScene({
   const root = useRef<THREE.Group>(null!);
   const stars = useRef<THREE.Points>(null!);
   const dust = useRef<THREE.Points>(null!);
-  const floor = useRef<THREE.Mesh>(null!);
   const atomRefs = useRef<(THREE.Mesh | null)[]>([]);
   const glowRefs = useRef<(THREE.Sprite | null)[]>([]);
-  const tweezerRefs = useRef<(THREE.Mesh | null)[]>([]);
   const bondRefs = useRef<(THREE.Mesh | null)[]>([]);
   const healRingRefs = useRef<(THREE.Mesh | null)[]>([]);
   const pulseSweep = useRef<THREE.Mesh>(null!);
@@ -192,12 +175,6 @@ export default function QecScene({
     (stars.current.material as THREE.PointsMaterial).opacity =
       0.35 + 0.25 * sphase(p, 0, 0.08);
     dust.current.rotation.y = -t * 0.012;
-
-    {
-      const floorMat = floor.current.material as THREE.MeshBasicMaterial;
-      floorMat.opacity = 0.11 * sphase(p, 0.02, 0.12);
-      floorMat.map?.offset.set(0, t * 0.006);
-    }
 
     // the drive pulse: position, glow wall, and a travelling light
     const pulseW = window01(p, T.pulseSweep[0], T.pulseSweep[1], 0.025);
@@ -267,13 +244,6 @@ export default function QecScene({
       const gmat = glow.material as THREE.SpriteMaterial;
       gmat.color.copy(colors.tmp);
       gmat.opacity = arrive * (0.3 + 0.38 * err + 0.4 * lift + 0.18 * twinkle);
-    });
-
-    // tweezer beams
-    tweezerRefs.current.forEach((tw, i) => {
-      if (!tw) return;
-      (tw.material as THREE.MeshBasicMaterial).opacity =
-        0.1 * sphase(p, T.tweezersIn[0], T.tweezersIn[1] + (i % COLS) * 0.008);
     });
 
     // entangling bonds ripple in behind the pulse
@@ -346,38 +316,6 @@ export default function QecScene({
       </points>
 
       <group ref={root}>
-        {/* retro grid floor, fading into the fog */}
-        <mesh ref={floor} rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.8, 0]}>
-          <planeGeometry args={[90, 90]} />
-          <meshBasicMaterial
-            map={gridTex}
-            transparent
-            opacity={0}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-          />
-        </mesh>
-
-        {/* optical tweezers — beams visible from every camera angle */}
-        {GRID.map(([x, z], i) => (
-          <mesh
-            key={`tw-${i}`}
-            position={[x, 0.4, z]}
-            ref={(m) => {
-              tweezerRefs.current[i] = m;
-            }}
-          >
-            <cylinderGeometry args={[0.05, 0.05, 7, 6]} />
-            <meshBasicMaterial
-              color="#fff676"
-              transparent
-              opacity={0}
-              blending={THREE.AdditiveBlending}
-              depthWrite={false}
-            />
-          </mesh>
-        ))}
-
         {/* nearest-neighbour entangling bonds */}
         {bonds.map(({ mid, horizontal }, i) => (
           <mesh
