@@ -14,8 +14,7 @@ const facts = [
 const gets = [
   "Direct access to Pasqal Cloud",
   "Harmoniqs' toolkit for pulse-level optimization with multi-GPU access, and engineering support throughout the event",
-  "State-of-the-art emulators and QPUs",
-  "Challenges designed to produce results relevant to both companies' technical roadmaps",
+  "State-of-the-art emulators and real quantum hardware",
 ];
 
 export default function Home() {
@@ -97,7 +96,7 @@ export default function Home() {
                 <p className="readout text-fg-muted">emulators</p>
               </div>
               <div className="card-pixel p-4">
-                <p className="readout text-fg-muted">qpus</p>
+                <p className="readout text-fg-muted">real quantum hardware</p>
               </div>
             </div>
           </div>
@@ -122,10 +121,6 @@ export default function Home() {
           </div>
         </div>
 
-        <p className="mt-10 max-w-xl text-sm leading-relaxed text-fg-muted">
-          Challenges designed to produce results relevant to both
-          companies&apos; technical roadmaps.
-        </p>
       </section>
 
       <section id="apply" className="border-t-2 border-line/70 bg-panel/30">
