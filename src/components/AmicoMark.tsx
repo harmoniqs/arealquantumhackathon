@@ -1,0 +1,39 @@
+// Amico, in his native pixel form — body follows currentColor, face is
+// brand yellow. Source: amicode/packages/extension/media/amico.svg
+export default function AmicoMark({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 64 56"
+      className={className}
+      role="img"
+      aria-label="Amico"
+    >
+      <path fill="currentColor" d="M2 2h16v14h28V2h16v52H46V40H18v14H2Z" />
+      <rect x="9" y="19" width="46" height="18" fill="#0A0A0A" />
+      <g fill="#FFF676">
+        <rect x="17" y="21" width="2" height="2" />
+        <rect x="15" y="23" width="2" height="2" />
+        <rect x="13" y="25" width="2" height="2" />
+        <rect x="15" y="27" width="2" height="2" />
+        <rect x="17" y="29" width="2" height="2" />
+        <rect x="21" y="21" width="6" height="2" />
+        <rect x="21" y="23" width="2" height="6" />
+        <rect x="25" y="23" width="2" height="6" />
+        <rect x="21" y="29" width="6" height="2" />
+        <rect x="29" y="21" width="2" height="10" />
+        <rect x="33" y="21" width="2" height="10" />
+        <rect x="37" y="21" width="6" height="2" />
+        <rect x="37" y="23" width="2" height="6" />
+        <rect x="41" y="23" width="2" height="6" />
+        <rect x="37" y="29" width="6" height="2" />
+        <rect x="45" y="21" width="2" height="2" />
+        <rect x="47" y="23" width="2" height="2" />
+        <rect x="49" y="25" width="2" height="2" />
+        <rect x="47" y="27" width="2" height="2" />
+        <rect x="45" y="29" width="2" height="2" />
+        <polygon points="28,33 36,33 34,36 30,36" />
+      </g>
+    </svg>
+  );
+}
