@@ -132,11 +132,58 @@ body {
   }
 }
 
+/* system-diagram connectors: a line with a pixel packet travelling along it */
+.flow-h {
+  position: relative;
+  height: 2px;
+  min-width: 2.5rem;
+  background: var(--line);
+}
+.flow-v {
+  position: relative;
+  width: 2px;
+  height: 2.5rem;
+  background: var(--line);
+}
+.packet {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background: var(--brand);
+  animation: packet-h 2.2s steps(12) infinite;
+}
+.flow-h .packet {
+  top: -3px;
+  left: 0;
+}
+.flow-v .packet {
+  left: -3px;
+  top: 0;
+  animation-name: packet-v;
+}
+@keyframes packet-h {
+  from {
+    left: 0;
+  }
+  to {
+    left: calc(100% - 7px);
+  }
+}
+@keyframes packet-v {
+  from {
+    top: 0;
+  }
+  to {
+    top: calc(100% - 7px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .blink {
+  .blink,
+  .packet {
     animation: none;
   }
 }
