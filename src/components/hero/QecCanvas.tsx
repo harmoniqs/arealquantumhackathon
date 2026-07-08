@@ -10,7 +10,7 @@ export default function QecCanvas({
 }) {
   return (
     <Canvas
-      camera={{ position: [0, 7, 16.5], fov: 42 }}
+      camera={{ position: [0, 1, 14.5], fov: 42 }}
       // low-res + pixelated upscale = the retro-game render style
       dpr={0.4}
       gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
