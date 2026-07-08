@@ -15,5 +15,5 @@ export const site = {
   // deploy that day (deploy-at-unlock — nothing secret lives in this repo).
   challengeUnlock: "2026-07-22T12:00:00-04:00",
   scheduleFinalBy: "July 22, 2026",
-  host: { name: "Harmoniqs", url: "https://www.harmoniqs.co" },
+  host: { name: "Harmoniqs", url: "https://www.harmoniqs.ai" },
 } as const;

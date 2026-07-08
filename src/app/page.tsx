@@ -13,7 +13,7 @@ const facts = [
 
 const gets = [
   "Direct access to Pasqal Cloud",
-  "Harmoniqs' toolkit for pulse-level optimization, with engineering support throughout the event",
+  "Harmoniqs' toolkit for pulse-level optimization with multi-GPU access, and engineering support throughout the event",
   "State-of-the-art emulators and QPUs",
   "Challenges designed to produce results relevant to both companies' technical roadmaps",
 ];
@@ -48,7 +48,8 @@ export default function Home() {
         {/* the system, as a pipeline */}
         <div aria-hidden="true">
           <div className="flex flex-col items-stretch gap-0 md:flex-row md:items-center">
-            <div className="card-pixel flex-1 p-5">
+            {/* dashed = a problem statement, not a physical system */}
+            <div className="flex-1 border-2 border-dashed border-line/80 p-5">
               <p className="readout text-fg-muted">challenges</p>
               <p className="mt-2 text-xs leading-relaxed text-fg-muted">
                 shared ahead of time with selected teams
@@ -65,8 +66,8 @@ export default function Home() {
             <div className="card-pixel flex-[1.3] border-brand-border bg-brand/5 p-5">
               <p className="readout text-brand">harmoniqs toolkit</p>
               <p className="mt-2 text-xs leading-relaxed text-fg-muted">
-                pulse-level optimization · engineering support throughout the
-                event
+                pulse-level optimization · multi-gpu access · engineering
+                support throughout the event
               </p>
             </div>
 
@@ -77,8 +78,8 @@ export default function Home() {
               <span className="packet" style={{ animationDelay: "0.7s" }} />
             </div>
 
-            <div className="card-pixel flex-1 p-5">
-              <p className="readout text-fg-muted">pasqal cloud</p>
+            <div className="card-pixel flex-1 border-brand-border bg-brand/5 p-5">
+              <p className="readout text-brand">pasqal cloud</p>
               <p className="mt-2 text-xs leading-relaxed text-fg-muted">
                 direct access
               </p>
@@ -101,10 +102,23 @@ export default function Home() {
             </div>
           </div>
 
-          {/* results loop back into the toolkit */}
-          <div className="mt-8 hidden md:mx-[8%] md:flex md:items-center md:gap-4">
-            <span className="readout text-fg-muted">◀ results</span>
-            <div className="h-0 flex-1 border-t-2 border-dashed border-line" />
+          {/* closed loop: results + calibration feed back into the toolkit */}
+          <div className="relative ml-[32%] mr-[5%] mt-6 hidden md:block">
+            <div className="absolute -top-6 left-0 h-6 w-[2px] bg-line" />
+            <div className="absolute -top-6 right-0 h-6 w-[2px] bg-line" />
+            <div className="flow-h w-full">
+              <span className="packet packet-rev" />
+            </div>
+            <p className="readout mt-3 text-center text-fg-muted">
+              ◀ results · calibration
+            </p>
+          </div>
+
+          {/* mobile: the loop as a label */}
+          <div className="mt-4 border-2 border-dashed border-line/80 p-4 text-center md:hidden">
+            <p className="readout text-fg-muted">
+              ↺ results · calibration → harmoniqs toolkit
+            </p>
           </div>
         </div>
 

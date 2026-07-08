@@ -161,6 +161,9 @@ body {
   top: 0;
   animation-name: packet-v;
 }
+.packet-rev {
+  animation-direction: reverse;
+}
 @keyframes packet-h {
   from {
     left: 0;
