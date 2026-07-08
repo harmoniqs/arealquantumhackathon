@@ -10,8 +10,6 @@ export const site = {
   venueShort: "Microsoft Garage · NYC",
   luma: {
     url: "https://luma.com/jdjfnw0e",
-    embed: "https://lu.ma/embed/event/evt-PbZQ7fdpSI4Ka4c/simple",
-    embedEnabled: true,
   },
   // Challenge specs decrypt on this date; content itself ships in a separate
   // deploy that day (deploy-at-unlock — nothing secret lives in this repo).

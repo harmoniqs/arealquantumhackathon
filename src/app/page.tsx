@@ -1,5 +1,5 @@
 import HeroSection from "@/components/hero/HeroSection";
-import LumaEmbed from "@/components/LumaEmbed";
+import ApplyButton from "@/components/ApplyButton";
 import { site } from "@/lib/site";
 
 const facts = [
@@ -58,7 +58,7 @@ export default function Home() {
             community.
           </p>
           <div className="mt-10">
-            <LumaEmbed />
+            <ApplyButton />
           </div>
         </div>
       </section>
