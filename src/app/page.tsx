@@ -63,20 +63,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section aria-label="Hosts" className="border-t-2 border-line/70">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-14 sm:px-6 md:grid-cols-2">
-          <p className="text-sm leading-relaxed text-fg-muted">
-            <span className="text-fg">Harmoniqs</span> builds quantum optimal
-            control software. Our advanced toolkit enables high-fidelity gate
-            synthesis and pulse-level optimization across all qubit platforms —
-            validated on neutral atoms, transmons, and trapped ions.
-          </p>
-          <p className="text-sm leading-relaxed text-fg-muted">
-            <span className="text-fg">Pasqal</span> builds analog quantum
-            processors based on arrays of neutral atoms.
-          </p>
-        </div>
-      </section>
     </>
   );
 }
