@@ -28,7 +28,7 @@ const CAM = [
   { p: 0.16, pos: [-6.5, 4.2, 11.5], look: [0, 0, 0] },
   { p: 0.35, pos: [5.5, 1.6, 10.5], look: [-1.5, 0.2, 0] },
   { p: 0.55, pos: [2.2, 4.8, 8.2], look: [1.2, 0, 0.2] },
-  { p: 0.74, pos: [-1.5, 3.0, 10.5], look: [0.5, 0, 0] },
+  { p: 0.68, pos: [-1.5, 3.0, 10.5], look: [0.5, 0, 0] },
   { p: 1.0, pos: [0, 5.8, 15.0], look: [0, 0.4, 0] },
 ] as const;
 
@@ -220,7 +220,7 @@ export default function QecScene({
       return window01(p, a, b, 0.03);
     };
 
-    const ctaRipple = sphase(p, 0.78, 0.88);
+    const ctaRipple = sphase(p, 0.72, 0.82);
 
     GRID.forEach(([gx, gz], i) => {
       const mesh = atomRefs.current[i];

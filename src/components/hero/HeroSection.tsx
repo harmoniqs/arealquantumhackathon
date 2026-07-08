@@ -43,11 +43,14 @@ export default function HeroSection() {
       STAGE_COPY.forEach((stage, i) => {
         const node = captionRefs.current[i];
         if (!node) return;
-        // the title is already visible at p = 0 — no fade-in ramp
+        // the title is already visible at p = 0 and the CTA stays visible
+        // through the bottom — the end stages skip their outer fade ramps
         const o =
           i === 0
             ? clamp01((stage.end - p) / 0.035)
-            : window01(p, stage.start, stage.end, 0.035);
+            : i === STAGE_COPY.length - 1
+              ? clamp01((p - stage.start) / 0.035)
+              : window01(p, stage.start, stage.end, 0.035);
         node.style.opacity = o.toFixed(3);
         node.style.transform = `translateY(${(1 - o) * 14}px)`;
         node.style.pointerEvents = o > 0.5 ? "auto" : "none";

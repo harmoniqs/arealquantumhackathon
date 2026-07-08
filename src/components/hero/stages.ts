@@ -23,8 +23,8 @@ export const T = {
   title: { start: 0.0, end: 0.13 },
   hardware: { start: 0.16, end: 0.32 },
   control: { start: 0.35, end: 0.52 },
-  real: { start: 0.55, end: 0.74 },
-  cta: { start: 0.8, end: 1.0 },
+  real: { start: 0.52, end: 0.66 },
+  cta: { start: 0.7, end: 1.0 },
 
   // scene beats
   tweezersIn: [0.02, 0.12],
