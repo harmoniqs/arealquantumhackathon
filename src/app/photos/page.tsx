@@ -26,7 +26,7 @@ export default function PhotosPage() {
           <li key={id} className="card-pixel relative aspect-[4/3] overflow-hidden">
             <div
               aria-hidden="true"
-              className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(139,124,246,0.08),transparent_65%)]"
+              className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(236,72,153,0.08),transparent_65%)]"
             />
             {i === 4 && (
               <div

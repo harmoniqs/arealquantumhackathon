@@ -7,7 +7,7 @@ export default function StaticHero() {
     <section className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-6 py-28 text-center">
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(139,124,246,0.12),transparent_60%)]"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(236,72,153,0.12),transparent_60%)]"
       />
       <p className="readout mb-5 text-fg-muted">
         wednesday, july 29, 2026 · microsoft garage, nyc

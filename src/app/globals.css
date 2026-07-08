@@ -7,8 +7,8 @@
   --line: #26263a;
   --fg: #e4e4f4;
   --fg-muted: #9494ad;
-  --atom: #7dd3fc; /* cold blue — resting atoms */
-  --entangle: #8b7cf6; /* violet — entangling bonds */
+  --atom: #f9a8d4; /* soft pink — resting atoms */
+  --entangle: #ec4899; /* hot pink — entangling bonds */
   --error: #ff5c3d; /* warm flare — reserved for errors only */
   --ok: #4ade80;
   /* Harmoniqs brand yellow (from harmoniqs-ai tokens) — always black text on

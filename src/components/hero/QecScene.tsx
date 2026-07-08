@@ -58,7 +58,7 @@ export default function QecScene({
   const glowTex = useMemo(() => makeGlowTexture(), []);
   const colors = useMemo(
     () => ({
-      atom: new THREE.Color("#7dd3fc"),
+      atom: new THREE.Color("#f9a8d4"),
       brand: new THREE.Color("#fff676"),
       error: new THREE.Color("#ff5c3d"),
       tmp: new THREE.Color(),
@@ -294,7 +294,7 @@ export default function QecScene({
           sizeAttenuation
           transparent
           opacity={0.5}
-          color="#a5b4fc"
+          color="#f3cce3"
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
@@ -309,7 +309,7 @@ export default function QecScene({
           sizeAttenuation
           transparent
           opacity={0.22}
-          color="#8b7cf6"
+          color="#ec4899"
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
@@ -328,7 +328,7 @@ export default function QecScene({
           >
             <cylinderGeometry args={[0.02, 0.02, SPACING - 0.6, 8]} />
             <meshBasicMaterial
-              color="#8b7cf6"
+              color="#ec4899"
               transparent
               opacity={0}
               blending={THREE.AdditiveBlending}
@@ -347,8 +347,8 @@ export default function QecScene({
             >
               <sphereGeometry args={[0.3, 32, 32]} />
               <meshStandardMaterial
-                color="#7dd3fc"
-                emissive="#7dd3fc"
+                color="#f9a8d4"
+                emissive="#f9a8d4"
                 emissiveIntensity={0.55}
                 roughness={0.3}
                 transparent
@@ -362,7 +362,7 @@ export default function QecScene({
             >
               <spriteMaterial
                 map={glowTex}
-                color="#7dd3fc"
+                color="#f9a8d4"
                 transparent
                 opacity={0}
                 blending={THREE.AdditiveBlending}
